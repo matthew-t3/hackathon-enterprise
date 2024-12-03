@@ -109,7 +109,7 @@ export const defaultData: Record<
   Record<string | 'not_filled_in', boolean>
 > = {
   gender: {
-    female: true,
+    female: false,
     male: false,
     non_binary: false,
     prefer_not_to_say: false,

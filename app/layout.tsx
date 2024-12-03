@@ -32,7 +32,7 @@ export default function RootLayout({
           <Header />
           <div className='flex h-[calc(100%-82px)]'>
             <Sidebar />
-            <main className='bg-white w-full h-full rounded-ss-[40px] rounded-es-[40px] overflow-y-auto'>
+            <main className='bg-white w-full h-full rounded-ss-[40px] overflow-y-auto relative'>
               {children}
             </main>
           </div>

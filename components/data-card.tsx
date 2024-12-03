@@ -4,6 +4,7 @@ import { Search } from './search';
 import { Checkbox } from './checkbox';
 import { Progress } from './progress';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { properName } from '@/lib/utils';
 
 type DataCardProps = {
   title: string;
@@ -12,6 +13,7 @@ type DataCardProps = {
   onCheckedItemsChange: Dispatch<
     SetStateAction<Record<string, Record<string, boolean>>>
   >;
+  totalSelected: number;
 };
 
 type DataItemProps = {
@@ -24,32 +26,34 @@ type DataItemProps = {
   isChecked: boolean;
 };
 
-function properName(name: string) {
-  const words = name.split('_');
-  return words.reduce((acc, word) => {
-    return acc + ' ' + word[0].toUpperCase() + word.slice(1);
-  }, '');
-}
-
-function reduceData(data: Record<string | 'not_filled_in', number>) {
+function reduceData(
+  data: Record<string | 'not_filled_in', number>,
+  totalSelected: number = 0,
+) {
   const total = Object.values(data).reduce((acc, value) => acc + value, 0);
   const notFilledIn = data['not_filled_in'];
+  const divisor = Math.max(totalSelected + 1, 1);
+
+  function getPercentage(value: number) {
+    return Math.round((value / total) * 100);
+  }
 
   return [
     {
       id: 'not_filled_in',
       text: 'Not filled in',
-      percentage: Math.round((notFilledIn / total) * 100),
+      percentage: getPercentage(notFilledIn),
       value: notFilledIn,
     },
     ...Object.entries(data)
       .filter(([key]) => key !== 'not_filled_in')
       .map(([key, value]) => {
+        const newValue = Math.round(value / divisor);
         return {
           id: key,
           text: properName(key as string),
-          percentage: Math.round((value / total) * 100),
-          value,
+          percentage: getPercentage(newValue),
+          value: newValue,
         };
       }),
   ];
@@ -98,9 +102,10 @@ export function DataCard({
   data,
   checkedItems,
   onCheckedItemsChange,
+  totalSelected,
 }: DataCardProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [stateData, setStateData] = useState(reduceData(data));
+  const [stateData, setStateData] = useState(reduceData(data, totalSelected));
   const title = properName(_title);
   const hasChecked = Object.values(checkedItems).some((val) => val);
 
@@ -129,6 +134,10 @@ export function DataCard({
       };
     });
   }
+
+  useEffect(() => {
+    setStateData(reduceData(data, totalSelected));
+  }, [checkedItems, totalSelected, data]);
 
   useEffect(() => {
     setStateData(
