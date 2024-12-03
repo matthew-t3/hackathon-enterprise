@@ -22,6 +22,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
+      <script
+        type='text/javascript'
+        src='//script.crazyegg.com/pages/scripts/0127/4249.js'
+        async></script>
       <body
         className={`${geistSans.variable} antialiased font-[family-name:var(--font-geist-sans)] bg-gray-900`}>
         <div className='h-svh font-[family-name:var(--font-geist-sans)]'>
