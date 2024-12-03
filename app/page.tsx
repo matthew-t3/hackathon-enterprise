@@ -4,6 +4,8 @@ import { data, defaultData } from '@/lib/data';
 import { properName } from '@/lib/utils';
 import { Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/tabs';
+import { ChartView } from './chart-view';
 
 type TagProps = {
   title: string;
@@ -61,18 +63,29 @@ export default function Home() {
           </p>
         </div>
 
-        <div className='grid gap-6 grid-cols-3'>
-          {Object.keys(data).map((key) => (
-            <DataCard
-              key={key}
-              title={key}
-              data={data[key]}
-              checkedItems={checkedData[key]}
-              onCheckedItemsChange={setCheckedData}
-              totalSelected={totalSelected}
-            />
-          ))}
-        </div>
+        <Tabs defaultValue='list' className='w-full'>
+          <TabsList>
+            <TabsTrigger value='list'>Data list</TabsTrigger>
+            <TabsTrigger value='chart'>Chart view</TabsTrigger>
+          </TabsList>
+          <TabsContent value='list'>
+            <div className='grid gap-6 grid-cols-3'>
+              {Object.keys(data).map((key) => (
+                <DataCard
+                  key={key}
+                  title={key}
+                  data={data[key]}
+                  checkedItems={checkedData[key]}
+                  onCheckedItemsChange={setCheckedData}
+                  totalSelected={totalSelected}
+                />
+              ))}
+            </div>
+          </TabsContent>
+          <TabsContent value='chart'>
+            <ChartView />
+          </TabsContent>
+        </Tabs>
       </div>
 
       {hasSelected && (
@@ -81,13 +94,13 @@ export default function Home() {
             <div className='flex gap-5'>
               <h1 className='text-gray-900 text-xl font-bold'>Selected</h1>
               <button
-                className='text-sm text-gray-500 font-semibold'
+                className='text-sm text-gray-500 font-semibold shrink-0'
                 onClick={() => setCheckedData(defaultData)}>
                 Unselect All
               </button>
             </div>
 
-            <div className='flex gap-3'>
+            <div className='flex gap-3 flex-wrap'>
               {Object.keys(selectedItems).map((key) => (
                 <Tag key={key} title={key} value={selectedItems[key]} />
               ))}
