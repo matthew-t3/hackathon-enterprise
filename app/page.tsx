@@ -1,4 +1,5 @@
 import { DataCard } from '@/components/data-card';
+import { data } from '@/lib/data';
 
 export default function Home() {
   return (
@@ -10,8 +11,10 @@ export default function Home() {
         </p>
       </div>
 
-      <div className='flex gap-6'>
-        <DataCard title='Country' />
+      <div className='grid gap-6 grid-cols-3'>
+        {Object.keys(data).map((key) => (
+          <DataCard key={key} title={key} data={data[key]} />
+        ))}
       </div>
     </div>
   );
